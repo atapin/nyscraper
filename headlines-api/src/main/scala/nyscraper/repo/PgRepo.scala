@@ -16,6 +16,13 @@ class PgRepo[F[_]](
       query[Headline]
     })
   )
+
+  override def insert(news: Headline): F[Headline] = {
+    db.run(quote {
+      query[Headline].insert(lift(news)).onConflictIgnore
+    })
+    F.pure(news)
+  }
 }
 
 

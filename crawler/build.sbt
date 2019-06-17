@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
       cats % Compile,
       catsEffect % Compile,
       scalaScraper % Compile,
+      fs2 % Compile,
       scalaTest % Test
     ),
     scalacOptions ++= Seq(

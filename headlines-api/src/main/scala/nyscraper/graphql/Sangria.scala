@@ -12,7 +12,7 @@ import sangria.ast.Document
 import sangria.execution._
 import sangria.marshalling.circe._
 import sangria.parser.{QueryParser, SyntaxError}
-import sangria.schema.{Field, ListType, ObjectType, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, ListType, ObjectType, Schema, StringType, fields}
 import sangria.validation.AstNodeViolation
 
 import scala.concurrent.ExecutionContext
@@ -51,7 +51,25 @@ object Sangria {
     )
   )
 
-  def schema[F[_]: Effect]: Schema[Repo[F], Unit] = Schema(queryType[F])
+  val titleArg = Argument("title", StringType)
+  val linkArg = Argument("link", StringType)
+
+  def inputType[F[_]: Effect]: ObjectType[Repo[F], Unit] = ObjectType(
+    name = "Insert",
+    fields = fields(
+      Field(
+        name = "addNews",
+        fieldType = newsType[F],
+        arguments = titleArg :: linkArg :: Nil,
+        resolve = c => c.ctx.insert(Headline(c.arg(titleArg), c.arg(linkArg))).toIO.unsafeToFuture()
+      )
+    )
+  )
+
+  def schema[F[_]: Effect]: Schema[Repo[F], Unit] = Schema(
+    queryType[F],
+    Some(inputType[F])
+  )
 
   private def execute[F[_]](
     schema: Schema[Repo[F], Unit],
