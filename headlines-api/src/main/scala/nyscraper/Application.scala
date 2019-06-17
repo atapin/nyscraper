@@ -3,15 +3,13 @@ package nyscraper
 
 import java.util.concurrent.{ExecutorService, Executors}
 
-import cats.Monad
 import cats.implicits._
 import cats.effect._
-import cats.effect.implicits._
 import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import io.circe.Json
+import io.getquill.{PostgresJdbcContext, SnakeCase}
 import nyscraper.graphql.{GraphQL, Sangria}
-import nyscraper.repo.{InMemoryRepo, Repo}
+import nyscraper.repo.{InMemoryRepo, PgRepo}
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.dsl._
@@ -54,16 +52,17 @@ trait Application {
     .resource
 
   def cachedThreadPool[F[_]](
-                              implicit sf: Sync[F]
-                            ): Resource[F, ExecutionContext] = {
-    val alloc = sf.delay(Executors.newCachedThreadPool)
-    val free  = (es: ExecutorService) => sf.delay(es.shutdown())
+    implicit F: Sync[F]
+  ): Resource[F, ExecutionContext] = {
+    val alloc = F.delay(Executors.newCachedThreadPool)
+    val free  = (es: ExecutorService) => F.delay(es.shutdown())
     Resource.make(alloc)(free).map(ExecutionContext.fromExecutor)
   }
 
   def program[F[_]: ConcurrentEffect: ContextShift: Timer]: Resource[F, Server[F]] = for {
     ec <- cachedThreadPool[F]
-    repo = InMemoryRepo[F]
+    db = new PostgresJdbcContext[SnakeCase](SnakeCase, "ctx")
+    repo = new PgRepo[F](db)
     g = Sangria[F](repo, ec)
     r = routes[F](g, ec)
     s <- server(r)

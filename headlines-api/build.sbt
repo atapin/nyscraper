@@ -16,6 +16,7 @@ lazy val root = (project in file("."))
       sangria % Compile,
       sangriaCirce % Compile,
       quill % Compile,
+      postgres % Compile,
 
       http4s % Compile,
       http4sServer % Compile,

@@ -9,7 +9,8 @@ object Dependencies {
   lazy val catsEffect = "org.typelevel" %% "cats-effect" % "1.3.1"
   lazy val sangria = "org.sangria-graphql" %% "sangria" % sangriaVersion
   lazy val sangriaCirce = "org.sangria-graphql" %% "sangria-circe" % "1.2.1"
-  lazy val quill = "io.getquill" %% "quill-async-postgres" % "3.2.0"
+  lazy val quill = "io.getquill" %% "quill-jdbc" % "3.2.0"
+  lazy val postgres = "org.postgresql" % "postgresql" % "9.4.1208"
   lazy val circe = "io.circe" % "circe-core_2.12" % "0.11.0"
   lazy val circeOptics = "io.circe" %% "circe-optics" % "0.11.0"
   lazy val http4s = "org.http4s" %% "http4s-dsl" % http4sVersion

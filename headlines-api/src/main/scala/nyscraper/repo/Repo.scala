@@ -1,7 +1,7 @@
 package nyscraper.repo
 
-import nyscraper.model.News
+import nyscraper.model.Headline
 
 trait Repo[F[_]] {
-  def list(): F[List[News]]
+  def list(): F[List[Headline]]
 }

@@ -2,10 +2,13 @@ package nyscraper.repo
 
 import java.net.URL
 
-import cats.Monad
-import nyscraper.model.News
+import cats.Applicative
+import nyscraper.model.Headline
 
-object InMemoryRepo {
-  def apply[F[_]:Monad](implicit F: Monad[F]): Repo[F] = () =>
-      F.pure(List(News("Bitcoin to the moon", new URL("https://bitcoin.org"))))
+class InMemoryRepo[F[_]](implicit F: Applicative[F]) extends Repo[F] {
+  private val storage = List(
+    Headline("Bitcoin to the moon", "https://bitcoin.org"),
+    Headline("Bitcoin falls down", "https://bitcoin.org")
+  )
+  override def list(): F[List[Headline]] = F.pure(storage)
 }

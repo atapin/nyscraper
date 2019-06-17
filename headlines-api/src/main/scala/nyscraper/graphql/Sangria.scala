@@ -6,7 +6,7 @@ import cats.effect._
 import cats.effect.implicits._
 import io.circe._
 import io.circe.optics.JsonPath.root
-import nyscraper.model.News
+import nyscraper.model.Headline
 import nyscraper.repo.Repo
 import sangria.ast.Document
 import sangria.execution._
@@ -20,7 +20,7 @@ import scala.util.{Failure, Success}
 
 object Sangria {
 
-  def newsType[F[_]]: ObjectType[Repo[F], News] = ObjectType(
+  def newsType[F[_]]: ObjectType[Repo[F], Headline] = ObjectType(
     name = "News",
     fields = fields(
       Field(
@@ -34,7 +34,7 @@ object Sangria {
         name = "link",
         fieldType = StringType,
         description = Some("News link."),
-        resolve = _.value.link.toString
+        resolve = _.value.link
       )
     )
   )

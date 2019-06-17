@@ -1,3 +1,3 @@
 package nyscraper.model
 
-case class Subscription(news: List[News])
+case class Subscription(news: List[Headline])
