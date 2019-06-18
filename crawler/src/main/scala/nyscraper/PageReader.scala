@@ -1,4 +1,4 @@
-package example
+package nyscraper
 
 import cats.effect.Effect
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser

@@ -1,6 +1,4 @@
-package example
-
-import java.net.URI
+package nyscraper
 
 import cats.Applicative
 import cats.effect._
@@ -10,7 +8,6 @@ import com.softwaremill.sttp.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 
 import scala.collection.mutable
-import scala.concurrent.duration._
 
 case class Headline(title: String, link: String) {
   def mutation() = s"""addNews(title: \\"$title\\", link: \\"$link\\")"""
@@ -35,7 +32,7 @@ object CrawlerApp extends IOApp {
       (l, el) => l += Headline(el.text, el.parent.get.parent.get.attr("href"))
     ).toList.pure[F]
 
-  def crawl[F[_]: Effect] = {
+  def crawl[F[_]: Effect]: F[Response[String]] = {
     val reader = UrlReader[F]("https://nytimes.com")
     for {
       page <- reader.readPage()
