@@ -10,7 +10,7 @@ import net.ruippeixotog.scalascraper.browser.JsoupBrowser.JsoupDocument
 import scala.collection.mutable
 
 case class Headline(title: String, link: String) {
-  def mutation() = s"""addNews(title: \\"$title\\", link: \\"$link\\")"""
+  def mutation() = s"""addNews(title: \\"$title\\", link: \\"https://nytimes.com$link\\")"""
 }
 
 object CrawlerApp extends IOApp {
