@@ -119,16 +119,14 @@ object Sangria {
   private val queryStringLens = root.query.string
   private val operationLens = root.operationName.string
 
-  def apply[F[_]: Effect](repo: Repo[F], ec: ExecutionContext)(
-    implicit F: Monad[F]
-  ): GraphQL[F] = (request: Json) => {
+  def apply[F[_]: Effect](repo: Repo[F], ec: ExecutionContext): GraphQL[F] = (request: Json) => {
     queryStringLens.getOption(request) match {
       case Some(qs) => QueryParser.parse(qs) match {
         case Success(ast) => execute(schema[F], ast, operationLens.getOption(request), repo, ec)
-        case Failure(e @ SyntaxError(_, _, pe)) => F.pure(syntaxError(e).asLeft)
-        case Failure(e) => F.pure(throwable(e).asLeft)
+        case Failure(e @ SyntaxError(_, _, pe)) => syntaxError(e).asLeft[Json].pure[F]
+        case Failure(e) => throwable(e).asLeft[Json].pure[F]
       }
-      case None => F.pure(stringError("No query was found.").asLeft)
+      case None => stringError("No query was found.").asLeft[Json].pure[F]
     }
   }
 }

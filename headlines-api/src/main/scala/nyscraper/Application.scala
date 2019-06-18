@@ -5,6 +5,7 @@ import java.util.concurrent.{ExecutorService, Executors}
 
 import cats.implicits._
 import cats.effect._
+import cats.effect.implicits._
 import io.chrisdavenport.log4cats.Logger
 import io.circe.Json
 import io.getquill.{PostgresJdbcContext, SnakeCase}

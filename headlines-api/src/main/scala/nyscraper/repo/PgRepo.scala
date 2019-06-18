@@ -1,27 +1,24 @@
 package nyscraper.repo
 
 import cats.Applicative
+import cats.implicits._
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 import nyscraper.model.Headline
 
-class PgRepo[F[_]](
+class PgRepo[F[_]: Applicative](
   db: PostgresJdbcContext[SnakeCase]
-)(
-  implicit F: Applicative[F]
 ) extends Repo[F] {
   import db._
 
-  override def list(): F[List[Headline]] = F.pure(
-    db.run(quote {
-      query[Headline]
-    })
-  )
+  override def list(): F[List[Headline]] = db.run(quote {
+    query[Headline]
+  }).pure[F]
 
   override def insert(news: Headline): F[Headline] = {
     db.run(quote {
       query[Headline].insert(lift(news)).onConflictIgnore
     })
-    F.pure(news)
+    news.pure[F]
   }
 }
 
