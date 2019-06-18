@@ -59,9 +59,9 @@ object Sangria {
     fields = fields(
       Field(
         name = "addNews",
-        fieldType = newsType[F],
+        fieldType = StringType,
         arguments = titleArg :: linkArg :: Nil,
-        resolve = c => c.ctx.insert(Headline(c.arg(titleArg), c.arg(linkArg))).toIO.unsafeToFuture()
+        resolve = c => c.ctx.insert(Headline(c.arg(titleArg), c.arg(linkArg))).map(_.toString).toIO.unsafeToFuture()
       )
     )
   )
