@@ -1,5 +1,9 @@
 # nyscraper
 
+This projects is a playground for Sangria GraphQL, Cats and Tagless Final. Crawler parses the headlines from nytimes.com and pushes them to the backend via graphql mutation. The API app exposes the parsed headlines with a graphql endpoint.
+
+## Run it
+
 1. Make sure your port 5432 is not in use or change ports mapping in the docker-compose file
 1. Run docker-compose with:
     ```bash
